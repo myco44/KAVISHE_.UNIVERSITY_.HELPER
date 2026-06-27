@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kavishe University Helper Pro - Gemini AI v12</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <!-- Top Navigation -->
+    <header class="bg-indigo-950 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-graduation-cap text-2xl text-indigo-400"></i>
+                <h1 class="text-xl font-bold tracking-wide">Kavishe University Helper <span class="text-xs bg-indigo-800 px-2 py-0.5 rounded-full text-indigo-200">Pro v12</span></h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="currentSemesterText" class="text-sm bg-indigo-900 px-3 py-1 rounded-md border border-indigo-800">Mwaka 1 - Semesta ya 1</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left & Middle Content (Course Library & Tools) -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Controls and GPA Tracker -->
+            <div class="bg-white p-5 rounded-2xl shadow-xs border border-gray-100 flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
+                <div class="w-full sm:w-64">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Chagua Mwaka na Semesta</label>
+                    <select id="semesterDropdown" onchange="handleSemesterChange()" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm font-medium focus:outline-none focus:border-indigo-500 text-gray-700">
+                        <option value="y1s1">Mwaka 1 - Semesta ya 1</option>
+                        <option value="y1s2">Mwaka 1 - Semesta ya 2</option>
+                        <option value="y2s1">Mwaka 2 - Semesta ya 1</option>
+                        <option value="y2s2">Mwaka 2 - Semesta ya 2</option>
+                        <option value="y3s1">Mwaka 3 - Semesta ya 1</option>
+                        <option value="y3s2">Mwaka 3 - Semesta ya 2</option>
+                        <option value="y4s1">Mwaka 4 - Semesta ya 1 (Specialized)</option>
+                        <option value="y4s2">Mwaka 4 - Semesta ya 2 (Graduation)</option>
+                    </select>
+                </div>
+                <div class="flex gap-4 items-center bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 flex-1 justify-around">
+                    <div class="text-center">
+                        <span class="block text-[10px] font-bold uppercase text-gray-400">Jumla ya Credits</span>
+                        <span id="summaryCredits" class="text-xl font-black text-indigo-950">0</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-[10px] font-bold uppercase text-gray-400">Lengo la GPA</span>
+                        <span class="text-xl font-black text-emerald-600">4.8 / 5.0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Course List -->
+            <div>
+                <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-folder-open text-indigo-600"></i> Mtaala Kamili wa Chuo (University Syllabus)
+                </h2>
+                <div id="coursesGrid" class="space-y-4">
+                    <!-- Dynamic Deep Courses Rendered Here -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Content: Lecturer Kavishe AI Interface -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-[calc(100vh-100px)] sticky top-20">
+                
+                <!-- AI Identity Header -->
+                <div class="p-4 bg-indigo-950 text-white rounded-t-2xl flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold border border-white/20 text-indigo-300">
+                            LK
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm tracking-wide">Lecturer Kavishe</h3>
+                            <p class="text-[11px] text-indigo-300 flex items-center gap-1">
+                                <span id="statusDot" class="w-2 h-2 bg-amber-400 rounded-full inline-block animate-pulse"></span> <span id="statusText">Weka API Key</span>
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="clearChat()" class="text-indigo-300 hover:text-white text-xs" title="Safisha Chat"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+
+                <!-- API KEY PASTE BOX -->
+                <div class="p-3 bg-indigo-50 border-b border-indigo-100 flex flex-col gap-1.5">
+                    <label class="text-[11px] font-bold text-indigo-950 uppercase tracking-wide flex justify-between">
+                        <span>number conecting Setup:</span>
+                        <span id="keyStatus" class="text-amber-700">Haijawekwa</span>
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="password" id="apiKeyInput" placeholder="Paste AIzaSy... key yako hapa" class="flex-1 bg-white border border-indigo-200 rounded-lg px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:border-indigo-600 shadow-inner">
+                        <button onclick="saveApiKey()" class="bg-indigo-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-indigo-800 transition-colors">
+                            Hifadhi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Context Indicator -->
+                <div id="activeContext" class="bg-gray-100 px-4 py-2 border-b border-gray-200 text-xs text-gray-700 font-medium hidden">
+                    <i class="fa-solid fa-book-open mr-1 text-indigo-600"></i> Somo linalofundishwa: <span id="contextCourseName" class="font-bold text-indigo-950">None</span>
+                </div>
+
+                <!-- Chat Messages Screen -->
+                <div id="chatContainer" class="flex-1 p-4 overflow-y-auto space-y-4 text-sm bg-gray-50/30">
+                    <div class="flex items-start space-x-2">
+                        <div class="w-7 h-7 rounded-full bg-indigo-950 text-white flex items-center justify-center text-xs shrink-0 font-bold">LK</div>
+                        <div class="bg-white p-3 rounded-xl rounded-tl-none border border-gray-200/60 shadow-xs max-w-[85%] text-gray-700 leading-relaxed text-xs">
+                            Habari ya majukumu ya chuo kiongozi! Mimi ni **Lecturer Kavishe**. Sasa hivi mtaala umekamilika kuanzia **Mwaka wa 1 hadi wa 4**.
+
+                            **Vitu vipya vilivyopo:**
+                            1. Bonyeza alama ya kitabu (<i class="fa-solid fa-graduation-cap text-indigo-600"></i>) kupata somo kwa kina.
+                            2. Bonyeza alama ya karatasi ya mtihani (<i class="fa-solid fa-file-signature text-amber-600"></i>) ili nikupe mtihani wa chuo wa somo hilo!
+                            3. Unaweza ku-upload picha ya swali kwa kubonyeza alama ya kamera hapo chini!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Upload Preview Section -->
+                <div id="imagePreviewContainer" class="p-2 bg-gray-100 border-t border-gray-200 hidden flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <img id="imagePreview" src="" class="w-10 h-10 object-cover rounded border border-gray-300">
+                        <span class="text-xs text-gray-500 truncate max-w-[180px]" id="imageName">picha.png</span>
+                    </div>
+                    <button onclick="removeSelectedImage()" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <!-- Message Inputs -->
+                <div class="p-3 border-t border-gray-100 bg-white rounded-b-2xl">
+                    <form id="aiChatForm" onsubmit="handleUserSubmit(event)" class="flex items-center space-x-2">
+                        <!-- Image Upload Button -->
+                        <label class="bg-gray-100 text-gray-600 p-3 rounded-xl hover:bg-gray-200 transition-colors cursor-pointer w-11 h-11 flex items-center justify-center shrink-0" title="Pakia picha ya Swali">
+                            <i class="fa-solid fa-camera text-base"></i>
+                            <input type="file" id="imageFileInput" accept="image/*" class="hidden" onchange="handleImageSelection(event)">
+                        </label>
+                        
+                        <input type="text" id="aiUserInput" placeholder="Uliza swali au omba uchambuzi wa kina..." class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-600 text-gray-800" required>
+                        
+                        <button type="submit" id="sendBtn" class="bg-indigo-950 text-white p-3 rounded-xl hover:bg-indigo-900 transition-colors shrink-0 flex items-center justify-center w-11 h-11">
+                            <i id="sendIcon" class="fa-solid fa-paper-plane text-sm"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Engine -->
+    <script>
+        // DATABASE KAMILI YA CHUO - MWAKA 1 HADI MWAKA 4 (SEMESTA ZOTE 8)
+        const universityDatabase = {
+            y1s1: {
+                title: "Mwaka 1 - Semesta ya 1",
+                courses: [
+                    { code: "CS111", name: "Introduction to Computing & Programming C", credits: 4, type: "Core", topics: ["Misingi ya Binary, Hexadecimal na Logic Gates", "Ubunifu wa Algorithms kwa kutumia Flowcharts", "Utangulizi wa Lugha ya C (Syntax, Variables, Types)", "Control Statements: If-Else, Switch Case, For & While Loops", "Misingi ya Arrays (One-Dimensional na Multi-Dimensional)"] },
+                    { code: "AC101", name: "Principles of Accounting I", credits: 3, type: "Core", topics: ["Misingi na Malengo ya Accounting (Accounting Equation)", "Double-Entry System (Debits na Credits)", "Kutengeneza Ledger Accounts na Trial Balance", "Maandalizi ya Financial Statements"] },
+                    { code: "GS101", name: "Development Studies I", credits: 2, type: "Compulsory", topics: ["Nadharia za Maendeleo (Modernization vs Dependency Theories)", "Mageuzi ya Kiuchumi na Kisiasa barani Afrika", "Athari za Utandawazi katika Nchi Zinazoendelea"] }
+                ]
+            },
+            y1s2: {
+                title: "Mwaka 1 - Semesta ya 2",
+                courses: [
+                    { code: "CS122", name: "Data Structures and Algorithms", credits: 4, type: "Core", topics: ["Utangulizi wa Pointers na Dynamic Memory Allocation", "Linked Lists: Singly, Doubly na Circular", "Mifumo ya Stacks na Queues (Push, Pop)", "Algoridamu za Kupanga: Bubble, Selection, Quick Sort"] },
+                    { code: "MT112", name: "Discrete Mathematics", credits: 3, type: "Core", topics: ["Set Theory na Set Operations", "Propositional Logic na Truth Tables", "Mathematical Induction"] }
+                ]
+            },
+            y2s1: {
+                title: "Mwaka 2 - Semesta ya 1",
+                courses: [
+                    { code: "CS211", name: "Database Management Systems (DBMS)", credits: 3, type: "Core", topics: ["Ubunifu wa Database kwa kutumia ER Diagrams", "Mchakato wa Normalization (1NF, 2NF, 3NF, BCNF)", "Lugha ya SQL (DDL na DML)", "Usimamizi wa Transaction (ACID Properties)"] },
+                    { code: "RM201", name: "Research Methods & Technical Writing", credits: 2, type: "Core", topics: ["Jinsi ya Kuchagua Topic na Problem Statement", "Literature Review na Research Gaps", "Mbinu za Kukusanya Data"] }
+                ]
+            },
+            y2s2: {
+                title: "Mwaka 2 - Semesta ya 2",
+                courses: [
+                    { code: "CS224", name: "Operating Systems & Architecture", credits: 3, type: "Core", topics: ["Kazi za Kernel, Process Management na Threads", "CPU Scheduling Algorithms (FIFO, Round Robin, SJF)", "Memory Management: Paging, Segmentation, na Virtual Memory", "Deadlock Prevention, Avoidance, na Detection"] }
+                ]
+            },
+            y3s1: {
+                title: "Mwaka 3 - Semesta ya 1",
+                courses: [
+                    { code: "CS311", name: "Software Engineering & Architecture", credits: 3, type: "Core", topics: ["Software Development Life Cycle (SDLC) Models", "Agile Methodology na Scrum Framework", "System Requirements Specification (SRS) Documentation", "UML Diagrams (Use Case, Class, Sequence Diagrams)"] },
+                    { code: "CS315", name: "Computer Networks & Security", credits: 3, type: "Core", topics: ["OSI Model na TCP/IP Protocol Suite", "IP Addressing, Subnetting (VLSM) na Routing Protocols", "Misingi ya Cryptography: Symmetric vs Asymmetric Encryption"] }
+                ]
+            },
+            y3s2: {
+                title: "Mwaka 3 - Semesta ya 2",
+                courses: [
+                    { code: "CS325", name: "Artificial Intelligence & Expert Systems", credits: 3, type: "Core", topics: ["Utangulizi wa AI na Intelligent Agents", "Search Algorithms: Uninformed vs Informed (A* Search)", "Misingi ya Machine Learning: Supervised vs Unsupervised Learning"] }
+                ]
+            },
+            y4s1: {
+                title: "Mwaka 4 - Semesta ya 1",
+                courses: [
+                    { code: "CS411", name: "Distributed Systems & Cloud Computing", credits: 4, type: "Core", topics: ["Misingi ya Distributed Architectures", "Cloud Service Models (IaaS, PaaS, SaaS)", "Virtualization na Containerization (Docker & Kubernetes)", "Distributed Consensus Algorithms (Paxos, Raft)"] },
+                    { code: "CS419", name: "Final Year Project I", credits: 3, type: "Core", topics: ["Project Formulation na Feasibility Study", "System Architecture Design", "Initial Prototype Development"] }
+                ]
+            },
+            y4s2: {
+                title: "Mwaka 4 - Semesta ya 2",
+                courses: [
+                    { code: "CS422", name: "Cybersecurity & Digital Forensics", credits: 3, type: "Core", topics: ["Penetration Testing Frameworks na Vulnerability Assessment", "Network Forensics na Incident Response Mechanisms", "Information Security Governance and Compliance"] },
+                    { code: "CS429", name: "Final Year Project II & Graduation Defense", credits: 4, type: "Core", topics: ["Full System Implementation and Testing", "Writing Final Thesis/Dissertation", "Project Defense and Presentation Panel"] }
+                ]
+            }
+        };
+
+        let selectedCourseContext = null;
+        let GEMINI_API_KEY = "";
+        let selectedBase64Image = null;
+
+        // Kazi ya kuhifadhi na kupakia API Key
+        function saveApiKey() {
+            const inputVal = document.getElementById("apiKeyInput").value.trim();
+            if(!inputVal) { alert("Tafadhali weka namba halisi!"); return; }
+            localStorage.setItem("university_gemini_key", inputVal);
+            checkAndLoadKey();
+            appendChatMessage("System", "umeunganishwa na darasa la kavishe!", false, true);
+        }
+
+        function checkAndLoadKey() {
+            const savedKey = localStorage.getItem("university_gemini_key");
+            const statusLabel = document.getElementById("keyStatus");
+            const statusDot = document.getElementById("statusDot");
+            const statusText = document.getElementById("statusText");
+
+            if(savedKey) {
+                GEMINI_API_KEY = savedKey;
+                document.getElementById("apiKeyInput").value = savedKey;
+                statusLabel.innerText = "Imeunganishwa Sahihi";
+                statusLabel.className = "text-emerald-600 font-bold";
+                statusDot.className = "w-2 h-2 bg-emerald-500 rounded-full inline-block animate-pulse";
+                statusText.innerText = "Lecturer yuko Online";
+            } else {
+                statusLabel.innerText = "Haijawekwa";
+                statusLabel.className = "text-amber-700 font-bold";
+                statusDot.className = "w-2 h-2 bg-amber-500 rounded-full inline-block animate-pulse";
+                statusText.innerText = "Weka API Key";
+            }
+        }
+
+        // Kusoma picha na kuigeuza kuwa Base64
+        function handleImageSelection(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                selectedBase64Image = event.target.result.split(',')[1]; // Toa ile sehemu ya mwanzo ya data uri
+                document.getElementById("imagePreview").src = event.target.result;
+                document.getElementById("imageName").innerText = file.name;
+                document.getElementById("imagePreviewContainer").classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeSelectedImage() {
+            selectedBase64Image = null;
+            document.getElementById("imageFileInput").value = "";
+            document.getElementById("imagePreviewContainer").classList.add("hidden");
+        }
+
+        // Kazi ya kupakia masomo kulingana na mwaka uliochaguliwa
+        function renderUniversityCourses(semKey) {
+            const currentData = universityDatabase[semKey] || universityDatabase.y1s1;
+            document.getElementById("currentSemesterText").innerText = currentData.title;
+            const grid = document.getElementById("coursesGrid");
+            grid.innerHTML = "";
+            let totalCredits = 0;
+
+            currentData.courses.forEach(course => {
+                totalCredits += course.credits;
+                let topicsHtml = course.topics.map(t => `<li class="flex items-center gap-2 text-xs text-gray-600"><i class="fa-solid fa-circle text-[5px] text-indigo-500"></i> ${t}</li>`).join('');
+                const topicsEscaped = encodeURIComponent(JSON.stringify(course.topics));
+
+                grid.innerHTML += `
+                    <div class="bg-white p-5 rounded-2xl shadow-xs border border-gray-100 hover:border-indigo-200 transition-all">
+                        <div class="flex justify-between items-start border-b border-gray-100 pb-3 mb-3">
+                            <div>
+                                <span class="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">${course.code}</span>
+                                <h3 class="text-base font-bold text-gray-900 mt-1">${course.name}</h3>
+                            </div>
+                            <div class="flex gap-2">
+                                <!-- Somo kwa Kina -->
+                                <button onclick="triggerDeepLecture('${course.code}', '${course.name}', '${topicsEscaped}')" title="Soma somo hili kwa KINA" class="bg-indigo-600 text-white hover:bg-indigo-700 p-2.5 rounded-xl transition-all cursor-pointer">
+                                    <i class="fa-solid fa-graduation-cap text-sm"></i>
+                                </button>
+                                <!-- Tolea Mtihani -->
+                                <button onclick="triggerExam('${course.code}', '${course.name}', '${topicsEscaped}')" title="Tengeneza MTIHANI wa somo hili" class="bg-amber-600 text-white hover:bg-amber-700 p-2.5 rounded-xl transition-all cursor-pointer">
+                                    <i class="fa-solid fa-file-signature text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold uppercase text-gray-400 tracking-wider">Mada za Syllabus:</h4>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1.5 pl-1">
+                                ${topicsHtml}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById("summaryCredits").innerText = totalCredits;
+        }
+
+        function handleSemesterChange() {
+            renderUniversityCourses(document.getElementById("semesterDropdown").value);
+        }
+
+        // Shusha Somo zima kwa kina
+        async function triggerDeepLecture(code, name, topicsEncoded) {
+            if(!GEMINI_API_KEY) { alert("Weka namba ya kujiunga na kavishe kwanza!"); return; }
+            const topics = JSON.parse(decodeURIComponent(topicsEncoded));
+            selectedCourseContext = { code, name };
+            
+            document.getElementById("activeContext").classList.remove("hidden");
+            document.getElementById("contextCourseName").innerText = `${code} - ${name}`;
+
+            appendChatMessage("System", `Inapakia darasa la kina la ${code}...`, false, true);
+            setLoadingState(true);
+
+            let promptText = `Wewe ni Lecturer Kavishe, mhadhiri mwandamizi wa chuo kikuu. Toa Lecture Notes ndefu sana, zenye uchambuzi wa kina na wa juu sana wa kitaaluma (Deep Academic Explanations) kwa ajili ya somo la ${code} - ${name}.\n\nFundisha mada hizi zote kwa urefu, hatua kwa hatua, toa mifano mizito na kodi au michoro inapobidi:\n${topics.join('\n')}`;
+
+            await callGeminiAPI(promptText);
+        }
+
+        // MPYA: Shusha Mtihani Kamili wa Chuo wa Somo Hilo
+        async function triggerExam(code, name, topicsEncoded) {
+            if(!GEMINI_API_KEY) { alert("Weka namba ya kujiunga na kavishe kwanza!"); return; }
+            const topics = JSON.parse(decodeURIComponent(topicsEncoded));
+            selectedCourseContext = { code, name };
+
+            appendChatMessage("System", `Kutengeneza University Past Paper ya ${code}...`, false, true);
+            setLoadingState(true);
+
+            let promptText = `Wewe ni Lecturer Kavishe. Tengeneza mtihani kamili wa chuo kikuu (University End of Semester Examination Paper) kwa ajili ya somo la ${code} - ${name}.\n\nMtihani uwe na muundo huu wa kina:\n1. **SECTION A (Short Answer Questions - Alama 40):** Maswali 5 ya kufikiri na kufafanua kwa kifupi misingi.\n2. **SECTION B (Analytical/Practical Essay Questions - Alama 60):** Maswali 3 marefu ya kutoa mifano ya kodi, kesi halisi (case studies) au mifumo kulingana na syllabus hii:\n${topics.join('\n')}\n\nMwishoni mwa mtihani weka muongozo mdogo wa jinsi ya kujibu ili kupata 'A'!`;
+
+            await callGeminiAPI(promptText);
+        }
+
+        // Kazi kuu ya kuwasiliana na Gemini API (Inasupport Maandishi + Picha)
+        async function callGeminiAPI(promptText) {
+            let requestBody = {
+                contents: [{
+                    parts: [{ text: promptText }]
+                }]
+            };
+
+            // Kama kuna picha imechaguliwa, iongeze kwenye ombi la API (Multimodal Request)
+            if (selectedBase64Image) {
+                requestBody.contents[0].parts.push({
+                    inlineData: {
+                        mimeType: "image/png",
+                        data: selectedBase64Image
+                    }
+                });
+            }
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                setLoadingState(false);
+                removeSelectedImage(); // Safisha picha baada ya kutuma
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    let aiReply = data.candidates[0].content.parts[0].text;
+                    appendChatMessage("LK", formatMarkdown(aiReply), false);
+                } else {
+                    appendChatMessage("LK", "Mfumo wa darasa umepata  shida .", false);
+                }
+            } catch (error) {
+                setLoadingState(false);
+                appendChatMessage("LK", "Hitilafu imetokea kwenye mtandao.", false);
+            }
+        }
+
+        async function handleUserSubmit(e) {
+            e.preventDefault();
+            if(!GEMINI_API_KEY) { alert("Weka namba yakujiunga na darasa Key!"); return; }
+            const input = document.getElementById("aiUserInput");
+            const userMsg = input.value.trim();
+            if(!userMsg) return;
+
+            appendChatMessage("Wewe", userMsg, true);
+            input.value = "";
+            setLoadingState(true);
+
+            let fullPrompt = `Wewe ni Lecturer Kavishe, mhadhiri wa chuo. Usijitambulishe kama AI kabisa. Toa majibu marefu sana na ya kina ya kichuo yenye mifano kamili mwanafunzi akichagua mitihani haijibu kwa kupitia chat na umsahishie na umpe hongera kama amefaulu kama amekosa mwambie ukweli na umuelekeze kwa kina onyesha hisia .`;
+            if(selectedCourseContext) {
+                fullPrompt += ` (Mwanafunzi yuko kwenye darasa la somo la ${selectedCourseContext.code} - ${selectedCourseContext.name}).`;
+            }
+            fullPrompt += `\n\nMwanafunzi anasema/anauliza/anajibu mtihani: ${userMsg}`;
+
+            await callGeminiAPI(fullPrompt);
+        }
+
+        function formatMarkdown(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+                .replace(/`([^`]+)`/g, '<code class="bg-gray-100 text-pink-600 px-1 py-0.5 rounded font-mono text-xs">$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function setLoadingState(isLoading) {
+            const btn = document.getElementById("sendBtn");
+            const icon = document.getElementById("sendIcon");
+            btn.disabled = isLoading;
+            icon.className = isLoading ? "fa-solid fa-spinner animate-spin text-sm" : "fa-solid fa-paper-plane text-sm";
+        }
+
+        function appendChatMessage(sender, text, isUser, isSystem = false) {
+            const chatContainer = document.getElementById("chatContainer");
+            const msgRow = document.createElement("div");
+            msgRow.className = "flex items-start space-x-2 " + (isUser ? "flex-row-reverse space-x-reverse" : "");
+
+            if(isSystem) {
+                msgRow.innerHTML = `<div class="w-full text-center my-1"><span class="bg-indigo-50 text-indigo-700 text-[10px] px-3 py-1 rounded-full border border-indigo-100 font-bold">${text}</span></div>`;
+            } else {
+                msgRow.innerHTML = `
+                    <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold shrink-0 ${isUser ? 'bg-indigo-200 text-indigo-900' : 'bg-indigo-950 text-white'}">${sender}</div>
+                    <div class="${isUser ? 'bg-indigo-950 text-white rounded-br-none' : 'bg-white text-gray-700 rounded-tl-none border border-gray-200/70'} p-3 rounded-xl shadow-xs max-w-[85%] leading-relaxed text-xs">${text}</div>
+                `;
+            }
+            chatContainer.appendChild(msgRow);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function clearChat() {
+            document.getElementById("chatContainer").innerHTML = "";
+            selectedCourseContext = null;
+            document.getElementById("activeContext").classList.add("hidden");
+            appendChatMessage("System", "Darasa limesafishwa", false, true);
+        }
+
+        window.onload = function() {
+            checkAndLoadKey();
+            renderUniversityCourses("y1s1");
+        };
+    </script>
+</body>
+</html>
